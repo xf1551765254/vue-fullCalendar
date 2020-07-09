@@ -1,9 +1,9 @@
 <template>
   <div id="app">
- 
-      <!-- 占据位置 -->
-      <router-view/>
-    
+
+    <!-- 占据位置 -->
+    <router-view />
+
   </div>
 </template>
 
@@ -15,11 +15,12 @@ export default {
 </script>
 
 <style lang="less">
-.size{
+.size {
   width: 100%;
   height: 100%;
 }
-html,body{
+html,
+body {
   .size;
   overflow: hidden;
   margin: 0;

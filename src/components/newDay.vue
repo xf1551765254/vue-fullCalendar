@@ -56,20 +56,20 @@
                     range-separator="至"
                     start-placeholder="开始时间"
                     end-placeholder="结束时间"
-                    format="hh:mm"
+                    format="HH:mm"
                     value-format="hh:mm"
                     placeholder="选择时间范围">
                 </el-time-picker>
             </el-form-item> 
             <el-form-item label="提醒时间" prop="time">
                 <el-select v-model="form.time" placeholder="请选择" size="small" style="width:100%">
-                    <el-option label="日程开始时" value="0"></el-option>
-                    <el-option label="30分钟前" value="1"></el-option>
-                    <el-option label="1天前" value="2"></el-option>
+                    <el-option label="日程开始时" value="日程开始时"></el-option>
+                    <el-option label="30分钟前" value="30分钟前"></el-option>
+                    <el-option label="1天前" value="1天前"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="日程类型" prop="type">
-                <el-select v-model="form.type" placeholder="请选择" size="small" style="width:100%">
+            <el-form-item label="日程类型" prop="colorType">
+                <el-select v-model="form.colorType" placeholder="请选择" size="small" style="width:100%">
                     <el-option label="个人" value="#61B1FF"></el-option>
                     <el-option label="工作" value="#E880D8"></el-option>
                     <el-option label="生日" value="#F71701"></el-option>
@@ -77,8 +77,8 @@
             </el-form-item>
             <el-form-item label="重要性" prop="important">
                 <el-select v-model="form.important" placeholder="请选择" size="small" style="width:100%">
-                    <el-option label="普通" value="0"></el-option>
-                    <el-option label="重要" value="1"></el-option>
+                    <el-option label="普通" value="普通"></el-option>
+                    <el-option label="重要" value="重要"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="备注" >
@@ -99,7 +99,7 @@
 <script>
 
 export default {
-  name: 'Home',
+  name: 'newDay',
   props: {
     visible: {
         type: Boolean,
@@ -131,7 +131,7 @@ export default {
               time: [
                 { required: true, message: '请选择提醒时间', trigger: 'change' }
               ],
-              type: [
+              colorType: [
                 { required: true, message: '请选择日程类型', trigger: 'change' }
               ],
               important: [
@@ -161,9 +161,24 @@ export default {
       handleSubmit(formName){
         this.$refs[formName].validate((valid) => {
           if (valid) {
-              console.log('success')
-            this.$emit('update:visible', false)
+              console.log('success',this.form)
+            if(this.form.value){
+              this.form.startTime=this.form.timeRange[0]
+              this.form.endTime=this.form.timeRange[1]
+              let newDate=this.form.date.split("-") 
+              let year = newDate[0]
+              let month =newDate[1]-1
+              let day = newDate[2]
+              let startTimeHours=this.form.startTime.split(':')[0]
+              let startTimeMinutes=this.form.startTime.split(':')[1]
+              let endTimeHours=this.form.endTime.split(':')[0]
+              let endTimeMinutes=this.form.endTime.split(':')[1]
+              console.log(year,month,day,startTimeHours,startTimeMinutes)
+              this.form.startDateTime=new Date(year,month,day,startTimeHours,startTimeMinutes,0)
+              this.form.endDateTime=new Date(year,month,day,endTimeHours,endTimeMinutes,0)
+            }
             this.$emit('submit', this.form)
+            this.$emit('update:visible', false)
           } else {
             console.log('error submit!!');
             return false;
@@ -174,7 +189,8 @@ export default {
 
   },
   watch: {
-    visible (val) {
+    // eslint-disable-next-line no-unused-vars
+    visible (val, old) {
         if (val) {
             //this.disableEdit = true
         }

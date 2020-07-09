@@ -1,8 +1,9 @@
+
 <template>
   <div class="content">
       <div class="header">
         <div class="deaderLeft">
-          今日日程
+          {{dayDate}} 日程
         </div>
       </div>
       <div class="contenter" v-if="activities.length>0">
@@ -26,30 +27,51 @@
 export default {
   name: 'DadyFullCalendar',
   components: {},
+  props: {
+    dayEvents: {
+        type: Array,
+        default:()=> []
+    },
+    dayDate:{
+      type: String,
+      default:''
+    }
+  },
   data () {
     return {
-       activities: [
-        {
-        content: '活动按期开始',
-        timestamp: '00:00~12:30',
-        color:'#61B1FF'
-      }, {
-        content: '通过审核',
-        timestamp: '00:00~12:30',
-        color:'#E880D8'
-      }, {
-        content: '创建成功',
-        timestamp: '00:00~12:30',
-        color:'#F71701'
-      }
-      ]
+       activities: []
     }
-},
-  methods: {
-   
   },
-  mounted () {
-   
+  methods: {
+    
+  },
+  mounted () {},
+  watch:{
+    
+    dayEvents: {
+      // eslint-disable-next-line no-unused-vars
+      handler (val, old) {
+        let arr = []
+        // eslint-disable-next-line no-unused-vars
+        val.forEach(item =>{
+          let obj={}
+          obj.content=item.title
+          obj.color=item.color
+          if(item.className){
+            let startDate = new Date(item.start)
+            let endDate = new Date(item.end)
+            let sartTime = startDate.format('hh:mm')
+            let endTime = endDate.format('hh:mm')
+            obj.timestamp=`${sartTime}~${endTime}`
+          }else{
+            obj.timestamp="00:00~24:00"
+          }
+          arr.push(obj)
+        })
+        this.activities=arr
+      },
+      deep: true  
+    }
   }
 }
 </script>
